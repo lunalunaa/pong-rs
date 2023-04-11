@@ -197,6 +197,7 @@ fn bounce_ball(
             if collided.is_some() {
                 let normal = Vec3::new(0., 1., 0.);
                 speed.dir = speed.dir - (2. * speed.dir.dot(normal)) * normal;
+                speed.speed_multiplier *= 2.;
             }
         }
     }
