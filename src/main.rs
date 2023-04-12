@@ -67,17 +67,6 @@ fn setup(
 
     commands.spawn(Camera2dBundle::default());
 
-    // // spawning wall
-    // commands.spawn((
-    //     MaterialMesh2dBundle {
-    //         mesh: meshes.add(shape::Box::new(600., 10., 0.).into()).into(),
-    //         material: materials.add(ColorMaterial::from(Color::WHITE)),
-    //         transform: Transform::from_translation(Vec3::new(0., -300., 0.)),
-    //         ..default()
-    //     },
-    //     Wall,
-    // ));
-
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: meshes.add(shape::Box::new(600., 10., 0.).into()).into(),
@@ -171,13 +160,13 @@ fn bounce_ball(
                 let (x, y) = (wall_trans.translation.x, wall_trans.translation.y);
 
                 let wall_normal = if x == 0. && y == 300. {
-                    Vec3::new(0., -1., 0.)
+                    Vec3::NEG_Y.normalize()
                 } else if x == 0. && y == -300. {
-                    Vec3::new(0., 1., 0.)
+                    Vec3::Y.normalize()
                 } else if x == 300. && y == 0. {
-                    Vec3::new(-1., 0., 0.)
+                    Vec3::NEG_X.normalize()
                 } else {
-                    Vec3::new(1., 0., 0.)
+                    Vec3::X.normalize()
                 };
 
                 speed.dir = speed.dir - (2. * speed.dir.dot(wall_normal)) * wall_normal;
