@@ -67,35 +67,23 @@ fn setup(
 
     commands.spawn(Camera2dBundle::default());
 
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Box::new(600., 10., 0.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(0., 300.0, 0.)),
-            ..default()
-        },
-        Wall,
-    ));
+    let mut spawn_wall = |dim_x: f32, dim_y: f32, translation: Vec3| {
+        commands.spawn((
+            MaterialMesh2dBundle {
+                mesh: meshes.add(shape::Box::new(dim_x, dim_y, 0.).into()).into(),
+                material: materials.add(ColorMaterial::from(Color::WHITE)),
+                transform: Transform::from_translation(translation),
+                ..default()
+            },
+            Wall,
+        ));
+    };
 
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Box::new(10., 600., 0.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(-300., 0., 0.)),
-            ..default()
-        },
-        Wall,
-    ));
+    spawn_wall(600., 10., Vec3::new(0., 300., 0.));
 
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Box::new(10., 600., 0.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(300., 0., 0.)),
-            ..default()
-        },
-        Wall,
-    ));
+    spawn_wall(10., 600., Vec3::new(300., 0., 0.));
+
+    spawn_wall(10., 600., Vec3::new(-300., 0., 0.));
 
     // spawning ball
     commands.spawn((
@@ -160,13 +148,13 @@ fn bounce_ball(
                 let (x, y) = (wall_trans.translation.x, wall_trans.translation.y);
 
                 let wall_normal = if x == 0. && y == 300. {
-                    Vec3::NEG_Y.normalize()
+                    Vec3::NEG_Y
                 } else if x == 0. && y == -300. {
-                    Vec3::Y.normalize()
+                    Vec3::Y
                 } else if x == 300. && y == 0. {
-                    Vec3::NEG_X.normalize()
+                    Vec3::NEG_X
                 } else {
-                    Vec3::X.normalize()
+                    Vec3::X
                 };
 
                 speed.dir = speed.dir - (2. * speed.dir.dot(wall_normal)) * wall_normal;
@@ -184,7 +172,7 @@ fn bounce_ball(
             );
 
             if collided.is_some() {
-                let normal = Vec3::new(0., 1., 0.);
+                let normal = Vec3::Y;
                 speed.dir = speed.dir - (2. * speed.dir.dot(normal)) * normal;
                 speed.speed_multiplier *= 2.;
             }
